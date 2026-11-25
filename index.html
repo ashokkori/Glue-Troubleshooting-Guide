@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Glue System Troubleshooting</title>
+  <style>
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      margin: 0;
+      padding: 12px;
+      background: #f0f3f6;
+      color: #333;
+    }
+    .header {
+      background: #003da5;
+      color: white;
+      padding: 16px;
+      border-radius: 12px;
+      text-align: center;
+      margin-bottom: 12px;
+    }
+    .header h1 { margin: 0; font-size: 1.25rem; font-weight: 700; }
+    .header p { margin: 4px 0 0; font-size: 0.85rem; opacity: 0.9; }
+
+    .control-card {
+      background: white;
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      text-align: center;
+      margin-bottom: 15px;
+    }
+    
+    .btn-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .btn {
+      border: none;
+      border-radius: 30px;
+      padding: 14px 10px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .btn-mic { background: #003da5; color: white; }
+    .btn-mic.listening { background: #d9381e; animation: pulse 1.2s infinite; }
+    .btn-stop { background: #6c757d; color: white; }
+    
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.03); }
+      100% { transform: scale(1); }
+    }
+
+    .status {
+      font-size: 0.85rem;
+      color: #666;
+      min-height: 20px;
+      margin-bottom: 12px;
+      font-style: italic;
+    }
+
+    .tags-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      justify-content: center;
+    }
+    .tag {
+      background: #e9ecef;
+      color: #212529;
+      padding: 8px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      border: 1px solid #ced4da;
+      cursor: pointer;
+    }
+    .tag:active { background: #003da5; color: white; }
+
+    .result-card {
+      background: white;
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      border-left: 5px solid #003da5;
+    }
+    .result-card h2 {
+      margin: 0 0 12px;
+      font-size: 1.1rem;
+      color: #003da5;
+    }
+    .step-item {
+      padding: 10px 0;
+      border-bottom: 1px solid #edf2f7;
+    }
+    .step-item:last-child { border-bottom: none; }
+    .cause { font-weight: bold; font-size: 0.9rem; color: #2d3748; margin-bottom: 3px; }
+    .action { font-size: 0.9rem; color: #0056b3; line-height: 1.35; }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Baby Care Glue Troubleshooting</h1>
+  <p>Voice-Activated Job-Aid</p>
+</div>
+
+<div class="control-card">
+  <div class="btn-grid">
+    <button class="btn btn-mic" id="micBtn" onclick="toggleMic()">🎙️ Speak</button>
+    <button class="btn btn-stop" onclick="stopAudio()">⏹️ Stop Voice</button>
+  </div>
+  <div class="status" id="status">Tap Speak or select an issue below</div>
+
+  <div class="tags-container">
+    <span class="tag" onclick="solve('gun')">Gun High Pressure</span>
+    <span class="tag" onclick="solve('versa')">VersaBlue Pressure</span>
+    <span class="tag" onclick="solve('sump')">Low Sump Pressure</span>
+    <span class="tag" onclick="solve('pump')">Pump Not Running</span>
+    <span class="tag" onclick="solve('spiral')">Bad Spiral</span>
+    <span class="tag" onclick="solve('string')">Stringing / Leaking</span>
+    <span class="tag" onclick="solve('drool')">Slot Drooling</span>
+    <span class="tag" onclick="solve('burn')">Burn Through</span>
+    <span class="tag" onclick="solve('ghost')">Ghosting</span>
+    <span class="tag" onclick="solve('heat')">Will Not Heat</span>
+    <span class="tag" onclick="solve('rupture')">Rupture Disc</span>
+    <span class="tag" onclick="solve('rtd')">RTD Sensors</span>
+  </div>
+</div>
+
+<div id="display"></div>
+
+<script>
+const guides = {
+  gun: {
+    title: "Applicator High Pressure at Gun",
+    steps: [
+      ["Web Mistrack", "Check and fix if web mistracking or sensor malfunction."],
+      ["Solenoid not energizing", "Have E&I check for 24-volt signal to solenoid."],
+      ["Linear Comp limits", "Correct PLS and Linear Comp Limits."],
+      ["Clogged nozzle or filter", "Change nozzle and change filters on gun."],
+      ["Bad module or solenoid", "Replace module or solenoid."],
+      ["Control air low", "Set air pressure to centerline. Inspect supply lines."],
+      ["Low temperature", "Set temps to centerline. Check heaters or RTDs."]
+    ]
+  },
+  versa: {
+    title: "Versa Blue Tank Pressure Shutdowns",
+    steps: [
+      ["Pressure spike at start", "Open bleeders for both sides and calibrate transducers."],
+      ["Clogged Tank Filter", "Replace Tank Filter."],
+      ["Clogged Applicator Filter", "Replace Applicator Filter."],
+      ["High ramp-up curve", "Have P&C verify software."]
+    ]
+  },
+  sump: {
+    title: "Low Pressure at Sump Pump or RMS",
+    steps: [
+      ["Glue tank empty", "Fill tank."],
+      ["Tank valve closed", "Rotate valve to the ON position."],
+      ["Basket filters clogged", "Replace basket filters."],
+      ["35 bar control valve failed", "Replace control valve. Check for missing or extra O-ring."],
+      ["Drive not enabled", "Enable drive at the PanelMate."]
+    ]
+  },
+  pump: {
+    title: "Sump or RMS Pump Not Running",
+    steps: [
+      ["Power disconnect off", "Turn disconnect to ON position."],
+      ["Alarms on PanelMate", "Acknowledge all alarms. If persistent, contact E&I."],
+      ["System cold", "Allow system to reach full operating temperature."],
+      ["Drive coupling not engaged", "Replace or repair drive coupling."]
+    ]
+  },
+  spiral: {
+    title: "Bad Spiral Pattern",
+    steps: [
+      ["Nozzle clogged or damaged", "Replace nozzle."],
+      ["Glue or spiral air cold", "Set temperatures to centerline."],
+      ["Spiral air pressure low", "Set spiral air pressure to centerline. Check for kinks and leaks."],
+      ["Air port clogged", "Clean out air porting."]
+    ]
+  },
+  string: {
+    title: "Glue Stringing or Leaking from Gun",
+    steps: [
+      ["Nozzle or mouthpiece loose", "Verify nozzle is tight and mouthpiece O-rings intact."],
+      ["Nozzle dirty or damaged", "Clean or replace nozzle."],
+      ["Glue module leaking", "Replace module."],
+      ["Air temp low or glue temp high", "Set temperatures to centerline."]
+    ]
+  },
+  drool: {
+    title: "Slot Coat Nozzle Drooling or Dripping",
+    steps: [
+      ["Worn mouthpiece", "Replace mouthpiece."],
+      ["Engagement depth or angle wrong", "Set depth and angle to centerline."],
+      ["Gun retracts too soon", "Adjust flow control valve to wipe mouthpiece clean on stop."],
+      ["Pump shutoff late", "Adjust pump timing to shut off sooner."]
+    ]
+  },
+  burn: {
+    title: "Slot Coat - Material Burn Through",
+    steps: [
+      ["Retracts late or engages early", "Adjust applicator flow control valve."],
+      ["Applicator temp too high", "Set temperature to centerline."],
+      ["Timing off", "Have E&I adjust timing to centerline."]
+    ]
+  },
+  ghost: {
+    title: "Glue Ghosting at Gun",
+    steps: [
+      ["Air regulator or leaks", "Set air regulator to centerline; check lines and fittings."],
+      ["Defective module or solenoid", "Replace module or solenoid."],
+      ["Internal RTD failing", "If gun is 10 degrees cooler than PanelMate, replace RTD or change applicator."]
+    ]
+  },
+  heat: {
+    title: "Glue System Will Not Heat Up",
+    steps: [
+      ["Heat not enabled or alarms active", "Enable heat and acknowledge all alarms on PanelMate."],
+      ["Breaker tripped", "Reset breaker. Contact E&I."],
+      ["Heater or RTD failed", "Replace RTD or replace heater."]
+    ]
+  },
+  rupture: {
+    title: "Slice Die - Blown Rupture Disc",
+    steps: [
+      ["Failed recirculation module", "Replace module."],
+      ["Recirculation port clogged", "Clean recirculation port in slice."]
+    ]
+  },
+  rtd: {
+    title: "RTD Sensor Issues",
+    steps: [
+      ["No readout or unstable", "Replace RTD; check wiring."],
+      ["Readout lower than set point", "Ensure RTD is bottomed out and springs back in mount."]
+    ]
+  }
+};
+
+let synth = window.speechSynthesis;
+let recognition = null;
+let isListening = false;
+
+// Initialize Speech Recognition
+const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+if (SpeechRec) {
+  recognition = new SpeechRec();
+  recognition.lang = 'en-US';
+  recognition.continuous = false;
+  recognition.interimResults = false;
+
+  recognition.onstart = () => {
+    isListening = true;
+    document.getElementById('micBtn').classList.add('listening');
+    document.getElementById('micBtn').innerText = "🔴 Listening...";
+    document.getElementById('status').innerText = "Speak symptom now (e.g. 'Bad spiral')...";
+  };
+
+  recognition.onresult = (e) => {
+    const text = e.results[0][0].transcript.toLowerCase();
+    document.getElementById('status').innerText = 'Heard: "' + text + '"';
+    
+    if (text.includes("high") || text.includes("gun")) solve('gun');
+    else if (text.includes("versa")) solve('versa');
+    else if (text.includes("low") || text.includes("sump")) solve('sump');
+    else if (text.includes("pump")) solve('pump');
+    else if (text.includes("spiral")) solve('spiral');
+    else if (text.includes("string") || text.includes("leak")) solve('string');
+    else if (text.includes("drool") || text.includes("drip")) solve('drool');
+    else if (text.includes("burn")) solve('burn');
+    else if (text.includes("ghost")) solve('ghost');
+    else if (text.includes("heat") || text.includes("cold")) solve('heat');
+    else if (text.includes("disc") || text.includes("rupture")) solve('rupture');
+    else if (text.includes("rtd") || text.includes("temp")) solve('rtd');
+    else {
+      document.getElementById('status').innerText = "Could not match speech. Tap an issue tag.";
+    }
+  };
+
+  recognition.onend = () => {
+    isListening = false;
+    document.getElementById('micBtn').classList.remove('listening');
+    document.getElementById('micBtn').innerText = "🎙️ Speak";
+  };
+
+  recognition.onerror = (e) => {
+    document.getElementById('status').innerText = "Mic error: " + e.error;
+    isListening = false;
+    document.getElementById('micBtn').classList.remove('listening');
+    document.getElementById('micBtn').innerText = "🎙️ Speak";
+  };
+}
+
+function toggleMic() {
+  if (synth && synth.speaking) synth.cancel();
+  if (!recognition) {
+    alert("Speech recognition is active only via Safari (iPhone) or Chrome (Android).");
+    return;
+  }
+  if (isListening) {
+    recognition.stop();
+  } else {
+    stopAudio();
+    recognition.start();
+  }
+}
+
+function solve(key) {
+  if (synth && synth.speaking) synth.cancel();
+  const g = guides[key];
+  if (!g) return;
+
+  let stepsHtml = g.steps.map((s, idx) => `
+    <div class="step-item">
+      <div class="cause">${idx + 1}. Cause: ${s[0]}</div>
+      <div class="action">Action: ${s[1]}</div>
+    </div>
+  `).join('');
+
+  document.getElementById('display').innerHTML = `
+    <div class="result-card">
+      <h2>${g.title}</h2>
+      ${stepsHtml}
+    </div>
+  `;
+
+  let speech = `Troubleshooting for ${g.title}. `;
+  g.steps.forEach((s, idx) => {
+    speech += `Step ${idx + 1}: ${s[0]}. Action: ${s[1]}. `;
+  });
+
+  speak(speech);
+}
+
+function speak(text) {
+  if (!synth) return;
+  synth.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.rate = 1.0;
+  synth.speak(u);
+}
+
+function stopAudio() {
+  if (synth) synth.cancel();
+}
+</script>
+</body>
+</html>
