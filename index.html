@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Glue System Troubleshooting</title>
+  <title>Baby Care Glue Troubleshooting Job-Aid</title>
   <style>
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       margin: 0;
       padding: 12px;
       background: #f0f3f6;
@@ -16,28 +16,29 @@
     .header {
       background: #003da5;
       color: white;
-      padding: 16px;
+      padding: 14px;
       border-radius: 12px;
       text-align: center;
       margin-bottom: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
     }
-    .header h1 { margin: 0; font-size: 1.25rem; font-weight: 700; }
-    .header p { margin: 4px 0 0; font-size: 0.85rem; opacity: 0.9; }
+    .header h1 { margin: 0; font-size: 1.25rem; font-weight: 700; text-transform: uppercase; }
+    .header p { margin: 3px 0 0; font-size: 0.85rem; opacity: 0.9; }
 
     .control-card {
       background: white;
       border-radius: 12px;
-      padding: 16px;
+      padding: 14px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.06);
       text-align: center;
-      margin-bottom: 15px;
+      margin-bottom: 12px;
     }
     
     .btn-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 10px;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
     .btn {
       border: none;
@@ -65,8 +66,18 @@
       font-size: 0.85rem;
       color: #666;
       min-height: 20px;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
       font-style: italic;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid #ced4da;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      margin-bottom: 12px;
+      outline: none;
     }
 
     .tags-container {
@@ -74,13 +85,16 @@
       flex-wrap: wrap;
       gap: 6px;
       justify-content: center;
+      max-height: 280px;
+      overflow-y: auto;
+      padding-bottom: 4px;
     }
     .tag {
       background: #e9ecef;
       color: #212529;
-      padding: 8px 12px;
-      border-radius: 20px;
-      font-size: 0.8rem;
+      padding: 7px 11px;
+      border-radius: 16px;
+      font-size: 0.78rem;
       font-weight: 600;
       border: 1px solid #ced4da;
       cursor: pointer;
@@ -105,14 +119,14 @@
     }
     .step-item:last-child { border-bottom: none; }
     .cause { font-weight: bold; font-size: 0.9rem; color: #2d3748; margin-bottom: 3px; }
-    .action { font-size: 0.9rem; color: #0056b3; line-height: 1.35; }
+    .action { font-size: 0.88rem; color: #0056b3; line-height: 1.35; }
   </style>
 </head>
 <body>
 
 <div class="header">
-  <h1>Baby Care Glue Troubleshooting</h1>
-  <p>Voice-Activated Job-Aid</p>
+  <h1>Glue Troubleshooting Job-Aid</h1>
+  <p>Voice-Activated Industrial Assistant</p>
 </div>
 
 <div class="control-card">
@@ -122,129 +136,239 @@
   </div>
   <div class="status" id="status">Tap Speak or select an issue below</div>
 
-  <div class="tags-container">
+  <input type="text" class="search-input" id="filterInput" placeholder="Filter symptom (e.g. DX, drooling, pump)..." oninput="filterTags()">
+
+  <div class="tags-container" id="tagsArea">
     <span class="tag" onclick="solve('gun')">Gun High Pressure</span>
-    <span class="tag" onclick="solve('versa')">VersaBlue Pressure</span>
-    <span class="tag" onclick="solve('sump')">Low Sump Pressure</span>
-    <span class="tag" onclick="solve('pump')">Pump Not Running</span>
-    <span class="tag" onclick="solve('spiral')">Bad Spiral</span>
-    <span class="tag" onclick="solve('string')">Stringing / Leaking</span>
-    <span class="tag" onclick="solve('drool')">Slot Drooling</span>
-    <span class="tag" onclick="solve('burn')">Burn Through</span>
-    <span class="tag" onclick="solve('ghost')">Ghosting</span>
-    <span class="tag" onclick="solve('heat')">Will Not Heat</span>
-    <span class="tag" onclick="solve('rupture')">Rupture Disc</span>
+    <span class="tag" onclick="solve('dx')">DX Tank High Pressure</span>
+    <span class="tag" onclick="solve('versa')">VersaBlue High Pressure</span>
+    <span class="tag" onclick="solve('sump')">Low Sump/RMS Pressure</span>
+    <span class="tag" onclick="solve('versa_fault')">VersaBlue Tank Faults</span>
+    <span class="tag" onclick="solve('module_air')">Module Control Air</span>
     <span class="tag" onclick="solve('rtd')">RTD Sensors</span>
+    <span class="tag" onclick="solve('no_flow')">No Glue Flow</span>
+    <span class="tag" onclick="solve('heat')">Will Not Heat</span>
+    <span class="tag" onclick="solve('pump')">Pump Not Running</span>
+    <span class="tag" onclick="solve('rupture')">Blown Rupture Disc</span>
+    <span class="tag" onclick="solve('spiral')">Bad Spiral Pattern</span>
+    <span class="tag" onclick="solve('formula')">Formula Card Limits</span>
+    <span class="tag" onclick="solve('skipping')">Glue Pattern Skips</span>
+    <span class="tag" onclick="solve('string')">Stringing / Leaking</span>
+    <span class="tag" onclick="solve('drip')">Slot Coat Dripping</span>
+    <span class="tag" onclick="solve('drool')">Slot Coat Drooling</span>
+    <span class="tag" onclick="solve('burn')">Material Burn Through</span>
+    <span class="tag" onclick="solve('no_glue_start')">No Glue at Start Up</span>
+    <span class="tag" onclick="solve('ghost')">Ghosting at Gun</span>
   </div>
 </div>
 
 <div id="display"></div>
 
 <script>
+// ALL 20 TROUBLESHOOTING PAGES FULLY DIGITIZED
 const guides = {
   gun: {
-    title: "Applicator High Pressure at Gun",
+    title: "Applicator High Pressure Shutdowns at Gun (Slide 2)",
     steps: [
-      ["Web Mistrack", "Check and fix if web mistracking or sensor malfunction."],
-      ["Solenoid not energizing", "Have E&I check for 24-volt signal to solenoid."],
-      ["Linear Comp limits", "Correct PLS and Linear Comp Limits."],
-      ["Clogged nozzle or filter", "Change nozzle and change filters on gun."],
+      ["Web Mistrack for associated application", "Check & Fix if web mistracking or sensor malfunction."],
+      ["Solenoid not energizing", "Have E&I check for 24 volt signal to solenoid."],
+      ["Incorrect PLS / Linear Comp Limits", "Correct the limits."],
+      ["Clogged or wrong size nozzle", "Change nozzle."],
+      ["Clogged applicator or RMS filter", "Change filters on gun."],
       ["Bad module or solenoid", "Replace module or solenoid."],
-      ["Control air low", "Set air pressure to centerline. Inspect supply lines."],
-      ["Low temperature", "Set temps to centerline. Check heaters or RTDs."]
+      ["Nozzle adapter plate clogged", "Replace nozzle adapter plate."],
+      ["Gun adapter clogged", "Replace gun adapter."],
+      ["Module control air too low", "Set air pressure to centerline. Inspect supply lines/fittings."],
+      ["Applicator or solenoid muffler clogged", "Replace the muffler."],
+      ["Applicator or flex line temperature too low", "Set temperatures to centerline. If not responding, check heaters or RTDs."]
+    ]
+  },
+  dx: {
+    title: "DX Tank High Pressure (Slide 3)",
+    steps: [
+      ["Bad pressure control valve", "Replace pressure control valve."],
+      ["Bad Recirculation hose at the sump", "Replace Recirculation Hose at the sump."],
+      ["Bad Check Valve at bottom of hopper", "Replace the check valve."],
+      ["Sump pressure transducer calibration incorrect", "Replace or re-calibrate pressure transducer."]
     ]
   },
   versa: {
-    title: "Versa Blue Tank Pressure Shutdowns",
+    title: "Versa Blue Tank Pressure Shutdowns (Slide 4)",
     steps: [
-      ["Pressure spike at start", "Open bleeders for both sides and calibrate transducers."],
+      ["Pressure sensor reading inaccurate / sudden spike", "Open bleeders for both sides application and calibrate transducers."],
+      ["Web Mistrack for associated application", "Check & Fix if web mistracking or sensor malfunction."],
       ["Clogged Tank Filter", "Replace Tank Filter."],
       ["Clogged Applicator Filter", "Replace Applicator Filter."],
-      ["High ramp-up curve", "Have P&C verify software."]
+      ["High pump Ramp up curve (acceleration)", "Have P&C Verify the software."],
+      ["Solenoid not energizing", "Have E&I check for 24-volt signal to solenoid."],
+      ["Clogged/wrong nozzle, bad module, or cold line", "Change nozzle, replace module/solenoid, set centerline air and temperatures."]
     ]
   },
   sump: {
-    title: "Low Pressure at Sump Pump or RMS",
+    title: "Low Pressure at Sump Pump or RMS (Slide 5)",
     steps: [
       ["Glue tank empty", "Fill tank."],
-      ["Tank valve closed", "Rotate valve to the ON position."],
-      ["Basket filters clogged", "Replace basket filters."],
-      ["35 bar control valve failed", "Replace control valve. Check for missing or extra O-ring."],
-      ["Drive not enabled", "Enable drive at the PanelMate."]
+      ["Tank valve in the off position", "Rotate valve to the on position."],
+      ["Sump pump basket filters clogged", "Replace basket filters."],
+      ["35 bar control valve failed or not calibrated", "Replace control valve. Verify/Fix missing or extra O-ring on top."],
+      ["Transducer not calibrated or failed", "Have E&I calibrate or replace."],
+      ["Glue leaks", "Check for leaks at tank sumps supplied RMS and repair leaks."],
+      ["Sump drive not enabled", "Enable drive at the panelmate."],
+      ["Sump or RMS drive slipping", "Tighten couplings on drive motor, gear reducer, and pump."],
+      ["Sump pump inlet clogged", "Remove sump and check inlet."]
     ]
   },
-  pump: {
-    title: "Sump or RMS Pump Not Running",
+  versa_fault: {
+    title: "Versa Blue Tank Faults (Coupling / Contactor / Thermostat) (Slide 6)",
     steps: [
-      ["Power disconnect off", "Turn disconnect to ON position."],
-      ["Alarms on PanelMate", "Acknowledge all alarms. If persistent, contact E&I."],
-      ["System cold", "Allow system to reach full operating temperature."],
-      ["Drive coupling not engaged", "Replace or repair drive coupling."]
+      ["Blocked rotation of the pump", "Rotate pump manually. If stuck, disconnect motor and pump from coupling, test individually, and change blocked part."],
+      ["Adhesive system temperature low", "Verify application is at set temperature and glue is melted."],
+      ["Loose connection or defective component in circuit", "Verify/fix loose connection. Replace faulty component one by one: Main contactor Auxiliary, Thermostats in Grid & Reservoir, Main contactor, or I/O Board 1."]
     ]
   },
-  spiral: {
-    title: "Bad Spiral Pattern",
+  module_air: {
+    title: "Module Control Air Issues (Slide 7)",
     steps: [
-      ["Nozzle clogged or damaged", "Replace nozzle."],
-      ["Glue or spiral air cold", "Set temperatures to centerline."],
-      ["Spiral air pressure low", "Set spiral air pressure to centerline. Check for kinks and leaks."],
-      ["Air port clogged", "Clean out air porting."]
-    ]
-  },
-  string: {
-    title: "Glue Stringing or Leaking from Gun",
-    steps: [
-      ["Nozzle or mouthpiece loose", "Verify nozzle is tight and mouthpiece O-rings intact."],
-      ["Nozzle dirty or damaged", "Clean or replace nozzle."],
-      ["Glue module leaking", "Replace module."],
-      ["Air temp low or glue temp high", "Set temperatures to centerline."]
-    ]
-  },
-  drool: {
-    title: "Slot Coat Nozzle Drooling or Dripping",
-    steps: [
-      ["Worn mouthpiece", "Replace mouthpiece."],
-      ["Engagement depth or angle wrong", "Set depth and angle to centerline."],
-      ["Gun retracts too soon", "Adjust flow control valve to wipe mouthpiece clean on stop."],
-      ["Pump shutoff late", "Adjust pump timing to shut off sooner."]
-    ]
-  },
-  burn: {
-    title: "Slot Coat - Material Burn Through",
-    steps: [
-      ["Retracts late or engages early", "Adjust applicator flow control valve."],
-      ["Applicator temp too high", "Set temperature to centerline."],
-      ["Timing off", "Have E&I adjust timing to centerline."]
-    ]
-  },
-  ghost: {
-    title: "Glue Ghosting at Gun",
-    steps: [
-      ["Air regulator or leaks", "Set air regulator to centerline; check lines and fittings."],
-      ["Defective module or solenoid", "Replace module or solenoid."],
-      ["Internal RTD failing", "If gun is 10 degrees cooler than PanelMate, replace RTD or change applicator."]
-    ]
-  },
-  heat: {
-    title: "Glue System Will Not Heat Up",
-    steps: [
-      ["Heat not enabled or alarms active", "Enable heat and acknowledge all alarms on PanelMate."],
-      ["Breaker tripped", "Reset breaker. Contact E&I."],
-      ["Heater or RTD failed", "Replace RTD or replace heater."]
-    ]
-  },
-  rupture: {
-    title: "Slice Die - Blown Rupture Disc",
-    steps: [
-      ["Failed recirculation module", "Replace module."],
-      ["Recirculation port clogged", "Clean recirculation port in slice."]
+      ["Main air off", "Open main air valve."],
+      ["Control air regulator not adjusted correctly", "Set to centerline."],
+      ["Air leaks", "Check all supply lines and fittings."],
+      ["Solenoid not functioning or no signal", "Replace solenoid or have E&I check for signal."]
     ]
   },
   rtd: {
-    title: "RTD Sensor Issues",
+    title: "RTD Sensor Issues (Slide 8)",
     steps: [
-      ["No readout or unstable", "Replace RTD; check wiring."],
-      ["Readout lower than set point", "Ensure RTD is bottomed out and springs back in mount."]
+      ["Readout not stable or no readout", "Replace RTD. Have E&I verify and troubleshoot wiring."],
+      ["Readout lower than set point", "Ensure RTD is secured into mount and contacting end of port (should spring back when bottomed out)."],
+      ["Readout extremely higher than applicator set point", "Probe too close to applicator body. Set up using CBA."]
+    ]
+  },
+  no_flow: {
+    title: "No Glue Flow Through the System (Slide 9)",
+    steps: [
+      ["System not at operating temperature", "Allow system to heat up."],
+      ["Faults or alarms displayed at panelmate", "Acknowledge all alarms."],
+      ["Pump not running", "Refer to Pump will not run guide."],
+      ["Tank hopper shutoff valve closed", "Rotate hopper valve to open position."],
+      ["Glue leaks", "Repair all leaks."],
+      ["35 bar Control or 55 bar Safety valve failed", "Replace the valve."],
+      ["Glue hopper empty", "Fill hopper."],
+      ["Sump pump inlet or basket filter clogged", "Remove sump pump and check inlet; replace basket filters."]
+    ]
+  },
+  heat: {
+    title: "Glue System Will Not Heat Up (Slide 10)",
+    steps: [
+      ["Heat not enabled or alarms active", "Enable heat at panelmate and acknowledge all alarms."],
+      ["Breaker fault", "Reset breaker. Contact E&I."],
+      ["Temperature set point lower than process variable", "Enter correct set point value."],
+      ["RTD fault", "Replace the RTD."],
+      ["Heater failure alarm", "Replace the heater."]
+    ]
+  },
+  pump: {
+    title: "Sump or RMS Pump Not Running (Slide 11)",
+    steps: [
+      ["Motor power disconnect off", "Turn disconnect to ON position."],
+      ["Alarms or faults on panelmate", "Acknowledge all alarms. If not clearable, contact E&I."],
+      ["System not at operating temperature", "Allow system to heat up."],
+      ["Drive not enabled", "Enable the drive on panelmate."],
+      ["Pump drive coupling not engaged", "Replace or repair coupling."],
+      ["Drive motor cable unseated or motor failed", "Securely fasten cables with lock ring; replace motor if failed."]
+    ]
+  },
+  rupture: {
+    title: "Slice Die – Blown Rupture Disc (Slide 12)",
+    steps: [
+      ["Failed recirculation through module", "Replace the module."],
+      ["Clogged recirculation port in slice", "Clean the recirculation port."]
+    ]
+  },
+  spiral: {
+    title: "Bad Spiral Pattern (Slide 13)",
+    steps: [
+      ["Nozzle clogged or damaged", "Replace nozzle."],
+      ["Glue temperature cold", "Set temperatures to centerline."],
+      ["Spiral air pressure too low", "Set spiral air pressure to centerline. Check air line for leaks/kinks."],
+      ["Spiral air temperature too low or high", "Set spiral air temperature to centerline."],
+      ["Nozzle distance or angle wrong", "Set nozzle height and angle to centerline."],
+      ["Spiral air port clogged", "Clean out air porting."]
+    ]
+  },
+  formula: {
+    title: "Glue Flow Not Meeting Formula Card Limits (Slide 14)",
+    steps: [
+      ["Glue Scaling is off", "Adjust Glue Scaling."],
+      ["Nozzle clogged or damaged", "Replace nozzle."],
+      ["Glue temperature cold", "Set temperatures to centerline."],
+      ["Spiral air pressure too low", "Set spiral air pressure to centerline. Check for kinks/leaks."],
+      ["Spiral air temperature too low or high", "Set spiral air temperature to centerline."],
+      ["Spiral air port clogged", "Clean out air porting."]
+    ]
+  },
+  skipping: {
+    title: "Glue Pattern Skips (Slide 15)",
+    steps: [
+      ["Plugged or dirty nozzle", "Replace nozzle."],
+      ["Module control air too low", "Adjust module control air to centerline."],
+      ["Nozzles too far or wrong angle to web", "Set nozzle distance and angle to centerline."],
+      ["Glue flow low", "Set glue flows to centerline."],
+      ["Web loose or fluttering", "Inspect web path idlers or build-up on dead plates."]
+    ]
+  },
+  string: {
+    title: "Glue Stringing or Leaking from Gun (Slide 16)",
+    steps: [
+      ["Nozzle or mouthpiece not secure", "Verify nozzle is tight and mouthpiece O-rings intact with mounting screws tight."],
+      ["Nozzle tip dirty or damaged", "Clean or replace nozzle."],
+      ["Glue module leaking", "Replace the module."],
+      ["Hot air temperature too low", "Set temperature to centerline."],
+      ["Bad solenoid valve", "Replace solenoid."],
+      ["Glue temperature too high", "Set temperature to centerline."]
+    ]
+  },
+  drip: {
+    title: "Slot Coat Nozzle Dripping - Line Down (Slide 17)",
+    steps: [
+      ["Applicator retracts too soon", "Adjust flow control valve to retract off web as soon as material stops, wiping mouthpiece clean."],
+      ["Glue shuts off too late", "Adjust pump timing to shut off sooner."],
+      ["Bad module or solenoid", "Replace module or solenoid."]
+    ]
+  },
+  drool: {
+    title: "Slot Coat Nozzle Glue Drooling - In Run (Slide 18)",
+    steps: [
+      ["Worn Mouthpiece", "Replace the mouthpiece."],
+      ["Mouthpiece depth of engagement wrong", "Set depth of engagement to centerline."],
+      ["Mouthpiece angle to web incorrect", "Set angle to centerline."],
+      ["Applicator not level", "Level applicator using a torpedo level."],
+      ["Glue Temperature too high", "Set temperature to centerline."]
+    ]
+  },
+  burn: {
+    title: "Slot Coat – Material Burn Through (Slide 19)",
+    steps: [
+      ["Applicator retracts too late or engages too early", "Adjust applicator flow control valve."],
+      ["Applicator temperature too high", "Set temperature to centerline."],
+      ["Applicator engage/retract timing off", "Have E&I adjust to centerline."]
+    ]
+  },
+  no_glue_start: {
+    title: "Slot Coat – No Glue at Start Up (Slide 20)",
+    steps: [
+      ["Applicator engages too late", "Adjust flow control valve to lower faster."],
+      ["Glue sump pump starts up too late", "Have E&I adjust timing."],
+      ["Module control air coming on too late", "Have E&I adjust timing."]
+    ]
+  },
+  ghost: {
+    title: "Glue Ghosting at Gun (Slide 21)",
+    steps: [
+      ["Control air regulator or leaks", "Set air regulator to centerline; check supply lines/fittings."],
+      ["Mouthpiece depth or not secure", "Set depth to centerline; ensure O-rings intact and screws tight."],
+      ["Glue temps too high or low", "Set temperatures to centerline."],
+      ["Defective module or solenoid", "Replace module or solenoid."],
+      ["Internal RTD failing (gun cooler)", "If gun is 10 degrees cooler than panelmate, internal RTD may be failing. Suggestion: C/O Applicator."]
     ]
   }
 };
@@ -265,27 +389,35 @@ if (SpeechRec) {
     isListening = true;
     document.getElementById('micBtn').classList.add('listening');
     document.getElementById('micBtn').innerText = "🔴 Listening...";
-    document.getElementById('status').innerText = "Speak symptom now (e.g. 'Bad spiral')...";
+    document.getElementById('status').innerText = "Speak symptom now (e.g. 'DX tank' or 'bad spiral')...";
   };
 
   recognition.onresult = (e) => {
     const text = e.results[0][0].transcript.toLowerCase();
     document.getElementById('status').innerText = 'Heard: "' + text + '"';
     
-    if (text.includes("high") || text.includes("gun")) solve('gun');
+    if (text.includes("dx")) solve('dx');
+    else if (text.includes("versa") && (text.includes("fault") || text.includes("coupling"))) solve('versa_fault');
     else if (text.includes("versa")) solve('versa');
     else if (text.includes("low") || text.includes("sump")) solve('sump');
-    else if (text.includes("pump")) solve('pump');
-    else if (text.includes("spiral")) solve('spiral');
-    else if (text.includes("string") || text.includes("leak")) solve('string');
-    else if (text.includes("drool") || text.includes("drip")) solve('drool');
-    else if (text.includes("burn")) solve('burn');
-    else if (text.includes("ghost")) solve('ghost');
+    else if (text.includes("module air") || text.includes("control air")) solve('module_air');
+    else if (text.includes("rtd") || text.includes("sensor")) solve('rtd');
+    else if (text.includes("no flow") || text.includes("no glue flow")) solve('no_flow');
     else if (text.includes("heat") || text.includes("cold")) solve('heat');
+    else if (text.includes("pump")) solve('pump');
     else if (text.includes("disc") || text.includes("rupture")) solve('rupture');
-    else if (text.includes("rtd") || text.includes("temp")) solve('rtd');
+    else if (text.includes("spiral")) solve('spiral');
+    else if (text.includes("formula") || text.includes("limits")) solve('formula');
+    else if (text.includes("skip") || text.includes("skipping")) solve('skipping');
+    else if (text.includes("string") || text.includes("tailing") || text.includes("leak")) solve('string');
+    else if (text.includes("drip")) solve('drip');
+    else if (text.includes("drool")) solve('drool');
+    else if (text.includes("burn")) solve('burn');
+    else if (text.includes("start up") || text.includes("patch")) solve('no_glue_start');
+    else if (text.includes("ghost")) solve('ghost');
+    else if (text.includes("high") || text.includes("gun")) solve('gun');
     else {
-      document.getElementById('status').innerText = "Could not match speech. Tap an issue tag.";
+      document.getElementById('status').innerText = "No exact speech match. Tap a button.";
     }
   };
 
@@ -306,7 +438,7 @@ if (SpeechRec) {
 function toggleMic() {
   if (synth && synth.speaking) synth.cancel();
   if (!recognition) {
-    alert("Speech recognition is active only via Safari (iPhone) or Chrome (Android).");
+    alert("Speech recognition is active in Chrome or Safari over HTTPS.");
     return;
   }
   if (isListening) {
@@ -315,6 +447,18 @@ function toggleMic() {
     stopAudio();
     recognition.start();
   }
+}
+
+function filterTags() {
+  const q = document.getElementById('filterInput').value.toLowerCase();
+  const tags = document.querySelectorAll('.tag');
+  tags.forEach(t => {
+    if (t.innerText.toLowerCase().includes(q)) {
+      t.style.display = "inline-block";
+    } else {
+      t.style.display = "none";
+    }
+  });
 }
 
 function solve(key) {
@@ -336,9 +480,10 @@ function solve(key) {
     </div>
   `;
 
+  // Read ALL steps in order
   let speech = `Troubleshooting for ${g.title}. `;
   g.steps.forEach((s, idx) => {
-    speech += `Step ${idx + 1}: ${s[0]}. Action: ${s[1]}. `;
+    speech += `Step ${idx + 1}. Cause: ${s[0]}. Action: ${s[1]}. `;
   });
 
   speak(speech);
